@@ -4,6 +4,7 @@
 #include "User.h"
 #include <wx/wx.h>
 #include <vector>
+#include <sstream>
 
 class MainFrame : public wxFrame
 {
@@ -17,6 +18,10 @@ private:
 	wxButton* home;
 	wxStaticText* display;
 
+	int stresslvl = 0;
+	int depressionlvl = 0;
+	int anxietylvl = 0;
+
 	//home page
 	wxStaticText* headlineText;
 	wxButton* login;
@@ -24,6 +29,7 @@ private:
 	wxButton* depressionSubmit;
 	wxButton* anxietySubmit;
 	wxButton* stressSubmit;
+	wxButton* diagnosisButton;
 
 	//login and sign up page
 	wxStaticText* userLabel;
@@ -52,5 +58,8 @@ private:
 	void OnDepressionSubmit(wxCommandEvent& evt);
 	void OnAnxietySubmit(wxCommandEvent& evt);
 	void OnStressSubmit(wxCommandEvent& evt);
+	void ShowAdviceAndDiagnosisStress(wxCommandEvent& evt);
+	void ShowAdviceAndDiagnosisAnxiety(wxCommandEvent& evt);
+	void ShowAdviceAndDiagnosis(wxCommandEvent& evt);
 };
 

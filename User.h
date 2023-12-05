@@ -6,10 +6,23 @@
 #include <vector>
 
 class User {
+
+private:
+
+    int stresslvl = 0;
+    int depresslvl = 0;
+    int anxietylvl = 0;
+
 public:
     std::string username;
     std::string password;
     int age;
+  
+
+
+
+
+
     User(std::string& username, std::string& password, int& age);
     std::string getUsername() const;
     std::string getPassword() const;
@@ -25,5 +38,14 @@ public:
     int decrypt(const int& data);
     void createUser(const User& newUser);
     static std::vector<std::string> getUserData(const std::string& username);
+
+    int getUserDepression(const std::string& username);
+
+    int getUserAnxiety(const std::string& username);
+
+    int getUserStress(const std::string& username);
+
+
+    
 };
 

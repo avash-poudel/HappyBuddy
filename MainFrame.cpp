@@ -4,10 +4,10 @@
 #include <string>
 
 enum IDs {
-	loginID = 1,
-	signupID = 2,
-	submitID = 3,
-	logoutID = 4,
+    loginID = 1,
+    signupID = 2,
+    submitID = 3,
+    logoutID = 4,
     homeID = 5,
     userID = 6,
     passID = 7,
@@ -23,11 +23,16 @@ enum IDs {
     depressionSubmitID = 17,
     anxietySubmitID = 18,
     stressSubmitID = 19,
+    diagnosisID = 20,
+
+
 };
 
 MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title) {
     wxFont headerFont = wxFont(24, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 	panel = new wxPanel(this);
+
+
 	headlineText = new wxStaticText(panel, wxID_ANY, "HappyBuddy", wxPoint(40, 50), wxSize(300, -1), wxALIGN_CENTER_HORIZONTAL);
     headlineText->SetFont(headerFont);
 	login = new wxButton(panel, loginID, "Login", wxPoint(110, 140));
@@ -43,6 +48,12 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title) {
     anxietySubmit = new wxButton(panel, anxietySubmitID, "Submit", wxPoint(350, 630));
     stressSubmit = new wxButton(panel, stressSubmitID, "Submit", wxPoint(350, 630));
     home = new wxButton(panel, homeID, "Home", wxPoint(300,10));
+
+    diagnosisButton = new wxButton(panel, diagnosisID, "View Diagnosis", wxPoint(350, 630));
+    diagnosisButton->Hide();
+
+
+
     home->Hide();
     depressionSubmit->Hide();
     anxietySubmit->Hide();
@@ -54,6 +65,8 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title) {
 	ageLabel->Hide();
 	ageInput->Hide();
 	submit->Hide();
+
+    
 	this->Bind(wxEVT_BUTTON, &MainFrame::OnButtonClick, this, loginID);
     this->Bind(wxEVT_BUTTON, &MainFrame::OnButtonClick, this, signupID);
     home->Bind(wxEVT_BUTTON, &MainFrame::OnHomeClick, this, homeID);
@@ -61,6 +74,8 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title) {
     depressionSubmit->Bind(wxEVT_BUTTON, &MainFrame::OnDepressionSubmit, this, depressionSubmitID);
     anxietySubmit->Bind(wxEVT_BUTTON, &MainFrame::OnAnxietySubmit, this, anxietySubmitID);
     stressSubmit->Bind(wxEVT_BUTTON, &MainFrame::OnStressSubmit, this, stressSubmitID);
+    diagnosisButton->Bind(wxEVT_BUTTON, &MainFrame::ShowAdviceAndDiagnosis, this, diagnosisID);
+
 
 	this->SetSize(wxSize(400, 300));
     CreateStatusBar();
@@ -142,6 +157,7 @@ void MainFrame::OnSubmitClick(wxCommandEvent& evt) {
             currentUser = username;
             wxLogStatus(message);
             std::vector<std::string> userData = User::getUserData(username);
+
             if (userData.size() == 0) {
                 this->SetSize(wxSize(800, 1000));
                 this->Center();
@@ -176,6 +192,7 @@ void MainFrame::OnSubmitClick(wxCommandEvent& evt) {
                 depressionAnswers.push_back(new wxTextCtrl(panel, question8ID, "", wxPoint(40, 535)));
                 depressionQuestionnaire[9]->SetPosition(wxPoint(30, 565));
                 depressionAnswers.push_back(new wxTextCtrl(panel, question9ID, "", wxPoint(40, 585)));
+
                 depressionSubmit->Show();
             }
             else {
@@ -189,6 +206,22 @@ void MainFrame::OnSubmitClick(wxCommandEvent& evt) {
                     displayData = displayData.substr(displayData.find(',')+1);
                     values.push_back(tempString);
                 }
+                
+                for (int i = 1; i < 10; i++)
+                {
+                    depressionlvl += stoi(values[i]);
+                }
+
+                for (int i = 10; i < 17; i++)
+                {
+                    stresslvl += stoi(values[i]);
+                }
+
+                for (int i = 17; i < 26; i++)
+                {
+                    anxietylvl += stoi(values[i]);
+                }
+
                 int num = 0;
                 displayData = "";
                 displayData += "User: " + values[num++] + "\n";
@@ -212,6 +245,9 @@ void MainFrame::OnSubmitClick(wxCommandEvent& evt) {
                 displayData += "\n\tYour Answer: " + values[num++];
                 displayData += "\n9. Thoughts that you would be better off dead, or of hurting yourself";
                 displayData += "\n\tYour Answer: " + values[num++];
+
+                
+
                 displayData += "\n\nAnxiety Questions:";
                 displayData += "\n1. Feeling nervous, anxious or on edge";
                 displayData += "\n\tYour Answer: " + values[num++];
@@ -227,6 +263,9 @@ void MainFrame::OnSubmitClick(wxCommandEvent& evt) {
                 displayData += "\n\tYour Answer: " + values[num++];
                 displayData += "\n7. Feeling afraid as if something awful might happen";
                 displayData += "\n\tYour Answer: " + values[num++];
+
+           
+
                 displayData += "\n\nStress Questions:";
                 displayData += "\n1. Do you have trouble staying focused on the present moment";
                 displayData += "\n\tYour Answer: " + values[num++];
@@ -246,6 +285,8 @@ void MainFrame::OnSubmitClick(wxCommandEvent& evt) {
                 displayData += "\n\tYour Answer: " + values[num++];
                 displayData += "\n9. Do you feel irritable, annoyed, or angry over trivial issues";
                 displayData += "\n\tYour Answer: " + values[num++];
+
+         
                 userLabel->Hide();
                 userInput->Hide();
                 passLabel->Hide();
@@ -254,6 +295,10 @@ void MainFrame::OnSubmitClick(wxCommandEvent& evt) {
                 this->SetSize(wxSize(800, 1100));
                 this->Center();
                 display = new wxStaticText(panel, wxID_ANY, displayData, wxPoint(30,100), wxDefaultSize);
+                display->Show();
+                diagnosisButton->Show();
+
+                
             }
         }
         else {
@@ -269,6 +314,7 @@ void MainFrame::OnDepressionSubmit(wxCommandEvent& evt) {
     for (int i = 0; i < depressionAnswers.size(); i++) {
         try {
             answer = stoi(std::string(depressionAnswers[i]->GetValue().mb_str()));
+
         }
         catch (...) {
             wxLogMessage("Invalid Input");
@@ -403,6 +449,21 @@ void MainFrame::OnStressSubmit(wxCommandEvent& evt) {
         }
         else
         {
+            for (int i = 1; i < 10; i++)
+            {
+                depressionlvl += stoi(saveToFile[i]);
+            }
+
+            for (int i = 10; i < 17; i++)
+            {
+                stresslvl += stoi(saveToFile[i]);
+            }
+
+            for (int i = 17; i < 26; i++)
+            {
+                anxietylvl += stoi(saveToFile[i]);
+            }
+
             std::string temp;
             for (int i = 0; i < saveToFile.size(); i++) {
                 temp += saveToFile[i] + ",";
@@ -418,5 +479,163 @@ void MainFrame::OnStressSubmit(wxCommandEvent& evt) {
             stressAnswers[i]->Hide();
         }
         stressSubmit->Hide();
+
+        
+     
+
+        diagnosisButton->Show();
+
     }
+
+
+
+}
+
+
+
+void MainFrame::ShowAdviceAndDiagnosis(wxCommandEvent& evt) {
+
+        display->Show();
+        display->Hide();
+ 
+   
+
+        // Perform analysis and generate advice and diagnosis
+        wxString adviceMessage;
+        wxString diagnosisMessage;
+        // Provide advice based on the scores
+       
+        if (depressionlvl == 0)
+        {
+            diagnosisMessage += "No Depression";
+            adviceMessage += "";
+        }
+        else if (depressionlvl < 4)
+        {
+            diagnosisMessage += "Minimal Depression";
+            adviceMessage += "Healthy Habits : Explore different types of exercises to find what you enjoy, such as walking, jogging, or cycling.\n\
+                Consider keeping a gratitude journal to reinforce positive thoughts.\n\
+                Utilize mood tracking apps in addition to Daylio for a comprehensive view of your well - being.https://daylio.webflow.io/\n\
+                        Check Mindful.org for additional mindfulness resourcesand guided practices.https ://www.mindful.org/\n\n\
+                            Stress Management :\n\
+                        Experiment with various mindfulness practices to discover what resonates with you.\n\
+                            Explore additional relaxation techniques, like progressive muscle relaxation or guided imagery.\n\
+                            Join online communities or forums related to mindfulness and share experiences.\n\
+                            Discover more relaxation exercises on Calm.https :www.calm.com \n";
+        }
+        else if (depressionlvl < 9)
+        {
+            diagnosisMessage += "Mild Depression";
+            adviceMessage += "Social Connection:\n\
+                Attend local events or classes to meet new people with shared interests.\n\
+                Engage in group activities, fostering connections with like - minded individuals.\n\
+                Consider volunteering or joining a club to enhance your social interactions.\n\
+                Explore events on Meetup for diverse social opportunities.https://www.meetup.com/\n\n\
+            Self - Help Resources :\n\
+            Read self - help books recommended by mental health professionals.\n\
+                Explore podcasts or audiobooks centered around personal growth and well - being.\n\
+                Use BetterHelp for its vast library of self - help articles and resources.https ://www.betterhelp.com/\n\
+                Dive into mental health articles on Verywell Mind.https ://www.verywellmind.com/\n\n\
+                Gratitude Practice :\n\
+            Share your gratitude practice with friends or family members to inspire positivity.\n\
+                Consider creating a vision board to visually represent your goals and aspirations.\n\
+                Explore other gratitude - focused apps and journals for variety.\n\
+                Discover more gratitude exercises on Greater Good Science Center.https ://ggia.berkeley.edu/\n";
+
+        }
+        else if (depressionlvl < 14)
+        {
+            diagnosisMessage += "Moderate Depression";
+            adviceMessage += "Professional Help:\n\
+                Seek recommendations from your primary care physician for reputable mental health professionals.\n\
+                Investigate online therapy options in addition to in - person sessions.\n\
+                Attend workshops or seminars hosted by mental health professionals for additional insights.\n\
+                Find local therapists on TherapyDen.https://www.therapyden.com/\n\n\
+            Tech Support :\n\
+            Experiment with different mental health apps to find the ones that resonate with you.\n\
+                Set aside specific times each day for mental exercisesand mood tracking.\n\
+                Consider creating a virtual support group with friends using mental health apps.\n\
+                Explore additional mental health exercises on SuperBetter.https ://superbetter.com/\n\n\
+                Routine Enhancement :\n\
+            Incorporate mindfulness practices into your daily routine, even if it's just for a few minutes.\n\
+                Experiment with different relaxation techniques to find what complements your routine.\n\
+                Add a variety of activities to your daily schedule to maintain interest and engagement.\n\
+                Explore more mindfulness exercises on Mindful.org.https ://www.mindful.org/\n";
+        }
+        else if (depressionlvl < 19)
+        {
+            diagnosisMessage += "Moderately Severe Depression";
+            adviceMessage += "Urgent Assistance:\n\
+                Develop a crisis plan with your mental health professional for proactive measures.\n\
+                Familiarize yourself with local crisis intervention servicesand helplines.\n\
+                Share your feelings with trusted friends or family members.\n\
+                Utilize Crisis Text Line for additional crisis support.https://www.crisistextline.org/\n\n\
+            Medication Discussion :\n\
+            Research potential side effectsand benefits of medications discussed with your psychiatrist.\n\
+                Keep a medication journal to track your experiencesand share them during discussions.\n\
+                Be open about any concerns or questions you have regarding medication options.\n\n\
+                Community Support :\n\
+            Attend both online and in - person support groups for varied perspectives.\n\
+                Connect with individuals who have similar experiences to broaden your support network.\n\
+                Investigate local community centers for additional group therapy options.\n\
+                Explore Mental Health America's Support Groups for more community resources. https://www.mhanational.org/find-support-groups\n\n\
+                Physical Activity :\n\
+            Experiment with different types of physical activities to find those that bring joy.\n\
+                Consider joining a fitness class or group for added social interaction.\n\
+                Engage in outdoor activities for a combination of physical exerciseand exposure to nature.\n\
+                Find workout ideas on Fitness Blender.https ://www.fitnessblender.com/\n";
+
+        }
+        else if (depressionlvl < 27)
+        {
+            diagnosisMessage += "Severe Depression";
+            adviceMessage += "Urgent Professional Help:\n\
+                Familiarize yourself with emergency room locations in your vicinity.\n\
+                Keep a list of emergency contacts easily accessible to those close to you.\n\
+                Establish a crisis communication plan with your mental health professional.\n\
+                Explore additional crisis intervention services on PsychCentral.https://psychcentral.com/\n\n\
+            Support Network :\n\
+            Create a rotating support schedule with friends or family to ensure consistent assistance.\n\
+                Consider involving multiple friends or family members in your support network.\n\
+                Share relevant information about your condition with your support network for understanding.\n\
+                Explore more about building a support network on Mental Health America.https ://www.mhanational.org/building-support-network\n\n\
+                Intensive Treatment :\n\
+            Explore day programs or partial hospitalization options as a step between outpatient and inpatient care.\n\
+                Investigate holistic treatment approaches that may complement traditional methods.\n\
+                Find comprehensive information about intensive treatment on NAMI.https ://www.nami.org/Your-Journey/Living-with-a-Mental-Health-Condition/Understanding-Intensive-Treatment\n\n\
+                Self - Care Practices :\n\
+            Incorporate aromatherapy or soothing scents into your self - care routine.\n\
+                Explore creative outlets such as art or music therapy.\n\
+                Consider incorporating mindfulness practices into daily self - care rituals for added relaxation.\n\
+                Learn more about self - care practices on Psychology Today.https ://www.psychologytoday.com/us\n";
+        }
+
+        
+        // Provide overall diagnosis
+        if (adviceMessage.IsEmpty()) {
+            diagnosisMessage = "You seem to be doing well overall. If you have any concerns, consult with a healthcare professional.";
+        }
+        else {
+
+            int yPos = 100; // Adjust as needed
+
+            wxStaticText* diagnosisText = new wxStaticText(panel, wxID_ANY, "Depression Diagnosis: " + diagnosisMessage, wxPoint(30, yPos), wxDefaultSize);
+            yPos += 50; // Adjust spacing
+            wxStaticText* adviceText = new wxStaticText(panel, wxID_ANY, "Advice: " + adviceMessage, wxPoint(30, yPos), wxDefaultSize);
+
+        }
+        
+    }
+
+        
+void MainFrame::ShowAdviceAndDiagnosisStress(wxCommandEvent& evt)
+{
+
+}
+
+
+
+void MainFrame::ShowAdviceAndDiagnosisAnxiety(wxCommandEvent& evt)
+{
+
 }

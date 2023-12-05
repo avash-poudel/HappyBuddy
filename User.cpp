@@ -40,17 +40,32 @@ int User::userAuthentication(const string& username, const string& password, int
     ifstream file("UserDatabase.txt");
     string line;
     string decryptedName = User::encrypt(username);
-    string decrypedPass = User::encrypt(password);
+    string decryptedPass = User::encrypt(password);
+
+
     while (getline(file, line)) {
-        if (line.find(decryptedName) != string::npos && login == 0) {
+
+        stringstream stream(line);
+        string token;
+
+
+        getline(stream, token, ',');
+        string storedEncryptedName = token;
+
+        getline(stream, token, ',');
+        string storedEncryptedPass = token;
+
+        if (login == 0 && decryptedName == storedEncryptedName) {
+            file.close();
             return 1;
         }
-        if (line.find(decryptedName) != string::npos && line.find(decrypedPass) != string::npos) {
+        if (decryptedName == storedEncryptedName && decryptedPass == storedEncryptedPass){
             file.close();
-            return 2;
-            
+                return 2;
+
         }
     }
+
     file.close();
     return 0;
 }
@@ -91,7 +106,7 @@ int User::decrypt(const int& data)
 void User::createUser(const User& newUser) {
     ofstream file("UserDatabase.txt", ios::app);
     if (file.is_open()) {
-        file << encrypt(newUser.getUsername()) << " " << encrypt(newUser.getPassword()) << " " << newUser.getAge() << "\n";
+        file << encrypt(newUser.getUsername()) << "," << encrypt(newUser.getPassword()) << "," << newUser.getAge() << "\n";
         file.close();
     }
     else {
@@ -116,3 +131,4 @@ std::vector<std::string> User::getUserData(const std::string& username) {
     file.close();
     return userData;
 }
+
