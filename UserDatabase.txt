@@ -1,7 +1,2 @@
-H,I,2
-I,H,3
-^,^,1
-[,[,1
-Y,Y,1
-M,M,1
-U,U,1
+fghi,fghi,5
+fghij,fghij,10

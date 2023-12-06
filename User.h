@@ -17,12 +17,6 @@ public:
     std::string username;
     std::string password;
     int age;
-  
-
-
-
-
-
     User(std::string& username, std::string& password, int& age);
     std::string getUsername() const;
     std::string getPassword() const;

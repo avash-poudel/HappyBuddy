@@ -34,7 +34,6 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title) {
     wxFont headerFont = wxFont(24, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 	panel = new wxPanel(this);
 
-
 	headlineText = new wxStaticText(panel, wxID_ANY, "HappyBuddy", wxPoint(40, 50), wxSize(300, -1), wxALIGN_CENTER_HORIZONTAL);
     headlineText->SetFont(headerFont);
 	login = new wxButton(panel, loginID, "Login", wxPoint(110, 140));
@@ -71,7 +70,6 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title) {
 	ageInput->Hide();
 	submit->Hide();
 
-    
 	this->Bind(wxEVT_BUTTON, &MainFrame::OnButtonClick, this, loginID);
     this->Bind(wxEVT_BUTTON, &MainFrame::OnButtonClick, this, signupID);
     home->Bind(wxEVT_BUTTON, &MainFrame::OnHomeClick, this, homeID);
