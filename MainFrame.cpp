@@ -49,14 +49,14 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title) {
     depressionSubmit = new wxButton(panel, depressionSubmitID, "Submit", wxPoint(350, 630));
     anxietySubmit = new wxButton(panel, anxietySubmitID, "Submit", wxPoint(350, 630));
     stressSubmit = new wxButton(panel, stressSubmitID, "Submit", wxPoint(350, 630));
-    home = new wxButton(panel, homeID, "Home", wxPoint(300,10));
+    home = new wxButton(panel, homeID, "Home", wxPoint(10,10));
 
-    diagnosisButton = new wxButton(panel, diagnosisID, "View Diagnosis", wxPoint(300, 630));
+    diagnosisButton = new wxButton(panel, diagnosisID, "View Diagnosis", wxPoint(225, 10));
     diagnosisButton->Hide();
 
-    anxietyButton = new wxButton(panel, anxietyID, "View Anxiety Diagnosis", wxPoint(155, 630));
+    anxietyButton = new wxButton(panel, anxietyID, "View Anxiety Diagnosis", wxPoint(85, 10));
     anxietyButton->Hide();
-    stressButton = new wxButton(panel, stressID, "View Stress Diagnosis", wxPoint(400, 630));
+    stressButton = new wxButton(panel, stressID, "View Stress Diagnosis", wxPoint(325, 10));
     stressButton->Hide();
 
     home->Hide();
@@ -84,7 +84,7 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title) {
     stressButton->Bind(wxEVT_BUTTON, &MainFrame::ShowAdviceAndDiagnosisStress, this, stressID);
     anxietyButton->Bind(wxEVT_BUTTON, &MainFrame::ShowAdviceAndDiagnosisAnxiety, this, anxietyID);
 
-    exitButton = new wxButton(panel, exitID, "Exit", wxPoint(700, 700));
+    exitButton = new wxButton(panel, exitID, "Exit", wxPoint(500, 10));
     exitButton->Bind(wxEVT_BUTTON, &MainFrame::OnExitButtonClick, this, exitID);
 
 
@@ -129,6 +129,31 @@ void MainFrame::OnHomeClick(wxCommandEvent& evt) {
         ageInput->Hide();
         submit->Hide();
         home->Hide();
+        if (diagnosisTextanxiety != nullptr)
+        {
+            diagnosisTextanxiety->Hide();
+        }
+        if (adviceTextanxiety != nullptr) {
+
+            adviceTextanxiety->Hide();
+        }
+        if (diagnosisTextstress != nullptr)
+        {
+            diagnosisTextstress->Hide();
+        }
+        if (adviceTextstress != nullptr) {
+            adviceTextstress->Hide();
+        }
+        if (diagnosisText != nullptr)
+        {
+            diagnosisText->Hide();
+        }
+        if (adviceText != nullptr) {
+            adviceText->Hide();
+        }
+        if (display != nullptr) {
+            display->Hide();
+        }
         wxLogStatus("");
         userInput->SetValue("");
         passInput->SetValue("");
@@ -296,8 +321,6 @@ void MainFrame::OnSubmitClick(wxCommandEvent& evt) {
                 displayData += "\n\tYour Answer: " + values[num++];
                 displayData += "\n9. Do you feel irritable, annoyed, or angry over trivial issues";
                 displayData += "\n\tYour Answer: " + values[num++];
-
-         
                 userLabel->Hide();
                 userInput->Hide();
                 passLabel->Hide();
@@ -306,8 +329,6 @@ void MainFrame::OnSubmitClick(wxCommandEvent& evt) {
                 this->SetSize(wxSize(800, 1100));
                 this->Center();
                 display = new wxStaticText(panel, wxID_ANY, displayData, wxPoint(30,100), wxDefaultSize);
-
-                display->Show();
                 diagnosisButton->Show();
 
                 
