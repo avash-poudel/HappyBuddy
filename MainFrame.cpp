@@ -24,7 +24,9 @@ enum IDs {
     anxietySubmitID = 18,
     stressSubmitID = 19,
     diagnosisID = 20,
-
+    anxietyID = 21,
+    stressID = 22,
+    exitID = 23,
 
 };
 
@@ -52,7 +54,10 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title) {
     diagnosisButton = new wxButton(panel, diagnosisID, "View Diagnosis", wxPoint(350, 630));
     diagnosisButton->Hide();
 
-
+    anxietyButton = new wxButton(panel, anxietyID, "View Anxiety Diagnosis", wxPoint(200, 630));
+    anxietyButton->Hide();
+    stressButton = new wxButton(panel, stressID, "View Stress Diagnosis", wxPoint(400, 630));
+    stressButton->Hide();
 
     home->Hide();
     depressionSubmit->Hide();
@@ -74,7 +79,13 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title) {
     depressionSubmit->Bind(wxEVT_BUTTON, &MainFrame::OnDepressionSubmit, this, depressionSubmitID);
     anxietySubmit->Bind(wxEVT_BUTTON, &MainFrame::OnAnxietySubmit, this, anxietySubmitID);
     stressSubmit->Bind(wxEVT_BUTTON, &MainFrame::OnStressSubmit, this, stressSubmitID);
+
     diagnosisButton->Bind(wxEVT_BUTTON, &MainFrame::ShowAdviceAndDiagnosis, this, diagnosisID);
+    stressButton->Bind(wxEVT_BUTTON, &MainFrame::ShowAdviceAndDiagnosisStress, this, stressID);
+    anxietyButton->Bind(wxEVT_BUTTON, &MainFrame::ShowAdviceAndDiagnosisAnxiety, this, anxietyID);
+
+    exitButton = new wxButton(panel, exitID, "Exit", wxPoint(700, 700));
+    exitButton->Bind(wxEVT_BUTTON, &MainFrame::OnExitButtonClick, this, exitID);
 
 
 	this->SetSize(wxSize(400, 300));
@@ -492,17 +503,29 @@ void MainFrame::OnStressSubmit(wxCommandEvent& evt) {
 }
 
 
-
 void MainFrame::ShowAdviceAndDiagnosis(wxCommandEvent& evt) {
 
         display->Show();
         display->Hide();
  
-   
+        diagnosisButton->Hide();
+        stressButton->Show();
+        anxietyButton->Show();
+
+        if (diagnosisTextanxiety != nullptr)
+        {
+            diagnosisTextanxiety->Hide();
+        }
+        if (diagnosisTextstress != nullptr)
+        {
+            diagnosisTextstress->Hide();
+
+        }
+        
 
         // Perform analysis and generate advice and diagnosis
-        wxString adviceMessage;
-        wxString diagnosisMessage;
+        wxString adviceMessage = "";
+        wxString diagnosisMessage= "";
         // Provide advice based on the scores
        
         if (depressionlvl == 0)
@@ -586,10 +609,10 @@ void MainFrame::ShowAdviceAndDiagnosis(wxCommandEvent& evt) {
                 Find workout ideas on Fitness Blender.https ://www.fitnessblender.com/\n";
 
         }
-        else if (depressionlvl < 27)
+        else if (depressionlvl <= 27)
         {
             diagnosisMessage += "Severe Depression";
-            adviceMessage += "Urgent Professional Help:\n\
+            adviceMessage += "Urgent Professional Help\n\n\
                 Familiarize yourself with emergency room locations in your vicinity.\n\
                 Keep a list of emergency contacts easily accessible to those close to you.\n\
                 Establish a crisis communication plan with your mental health professional.\n\
@@ -602,7 +625,7 @@ void MainFrame::ShowAdviceAndDiagnosis(wxCommandEvent& evt) {
                 Intensive Treatment :\n\
             Explore day programs or partial hospitalization options as a step between outpatient and inpatient care.\n\
                 Investigate holistic treatment approaches that may complement traditional methods.\n\
-                Find comprehensive information about intensive treatment on NAMI.https ://www.nami.org/Your-Journey/Living-with-a-Mental-Health-Condition/Understanding-Intensive-Treatment\n\n\
+                Find comprehensive information about intensive treatment on NAMI.\nhttps ://www.nami.org/Your-Journey/Living-with-a-Mental-Health-Condition/Understanding-Intensive-Treatment\n\n\
                 Self - Care Practices :\n\
             Incorporate aromatherapy or soothing scents into your self - care routine.\n\
                 Explore creative outlets such as art or music therapy.\n\
@@ -619,10 +642,11 @@ void MainFrame::ShowAdviceAndDiagnosis(wxCommandEvent& evt) {
 
             int yPos = 100; // Adjust as needed
 
-            wxStaticText* diagnosisText = new wxStaticText(panel, wxID_ANY, "Depression Diagnosis: " + diagnosisMessage, wxPoint(30, yPos), wxDefaultSize);
+            diagnosisText = new wxStaticText(panel, wxID_ANY, "Depression Diagnosis: " + diagnosisMessage, wxPoint(20, yPos), wxDefaultSize);
             yPos += 50; // Adjust spacing
-            wxStaticText* adviceText = new wxStaticText(panel, wxID_ANY, "Advice: " + adviceMessage, wxPoint(30, yPos), wxDefaultSize);
+            adviceText = new wxStaticText(panel, wxID_ANY, "Advice: " + adviceMessage, wxPoint(20, yPos), wxDefaultSize);
 
+      
         }
         
     }
@@ -630,12 +654,203 @@ void MainFrame::ShowAdviceAndDiagnosis(wxCommandEvent& evt) {
         
 void MainFrame::ShowAdviceAndDiagnosisStress(wxCommandEvent& evt)
 {
+    display->Show();
+    display->Hide();
 
+    diagnosisButton->Show();
+    stressButton->Hide();
+    anxietyButton->Show();
+
+
+
+    if (diagnosisText != nullptr)
+    {
+        diagnosisText->Hide();
+        adviceText->Hide();
+    }
+    if (diagnosisTextanxiety != nullptr)
+    {
+        diagnosisTextanxiety->Hide();
+        adviceTextanxiety->Hide();
+    }
+
+  
+    // Perform analysis and generate advice and diagnosis
+    wxString adviceMessage = "";
+    wxString diagnosisMessageStress = "";
+    // Provide advice based on the scores
+
+    if (stresslvl == 0)
+    {
+        diagnosisMessageStress += "No Stress\n";
+        adviceMessage += "";
+    }
+    else if (stresslvl < 3)
+    {
+        diagnosisMessageStress += "Minimal Stress\n";
+        adviceMessage += "Mindful Breathing : Practice deep, mindful breathing exercises to calm the nervous system.\n\n\
+            Regular Exercise : Engage in regular physical activity to release tensionand boost endorphins.\n\n\
+            Healthy Sleep : Prioritize quality sleep to support overall well - being.\n\n\
+            Positive Affirmations : Incorporate positive affirmations into your daily routine.\n\n\
+            Mindfulness Apps : Explore mindfulness apps like Headspace or Calm for guided meditation.\n";
+    }
+    else if (stresslvl < 6)
+    {
+        diagnosisMessageStress += "Mild Stress\n";
+        adviceMessage += "Journaling: Write down your thoughts and feelings to gain perspective.\n\n\
+            Social Support : Share your concerns with friends or family members for emotional support.\n\n\
+            Time Management : Organize tasks to reduce feelings of overwhelm.\n\n\
+            Gratitude Practice : Cultivate a gratitude practice to focus on positive aspects.\n\n\
+            Professional Help : Consider talking to a mental health professional for guidance.\n";
+
+    }
+    else if (stresslvl < 10)
+    {
+        diagnosisMessageStress += "Moderate Stress\n";
+        adviceMessage += "Counseling or Therapy: Seek professional counseling or therapy for personalized support.\n\n\
+            Stress Reduction Techniques : Learn and practice stress reduction techniques, such as progressive muscle relaxation or biofeedback.\n\n\
+            Mind - Body Practices : Explore mind - body practices like yoga or tai chi.\n\n\
+            Limit Stimulants : Reduce intake of stimulants like caffeine, as they can exacerbate stress.\n\n\
+            Mindfulness - Based Stress Reduction(MBSR) : Consider enrolling in MBSR programs for structured mindfulness training.\n";
+    }
+    else if (stresslvl < 16)
+    {
+        diagnosisMessageStress += "Moderately Severe Stress";
+        adviceMessage += "Medication Consultation: Consult with a psychiatrist about medication options.\n\n\
+            Crisis Hotline : Keep crisis hotline numbers handy for immediate support.\n\n\
+            Therapeutic Interventions : Engage in therapeutic interventions for stress management.\n\n\
+            Self - Care Retreat : Plan a self - care retreat or day to focus on relaxation.\n\n\
+            Support Groups : Join support groups for individuals experiencing similar stress challenges.\n";
+
+    }
+    else if (stresslvl <= 21)
+    {
+        diagnosisMessageStress += "Severe Stress";
+        adviceMessage += "Emergency Services : In extreme situations, seek help from emergency services.\n\n\
+            Inpatient Treatment : Consider inpatient treatment for intensive supportand stabilization.\n\n\
+            Comprehensive Treatment Plan : Collaborate with mental health professionals to develop a comprehensive stress management plan.\n\n\
+            Holistic Approaches : Explore holistic approaches like acupuncture or massage therapy.\n\n\
+            Mindfulness - Based Interventions : Participate in intensive mindfulness - based interventions for severe stress.\n";
+    }
+
+
+    // Provide overall diagnosis
+    if (adviceMessage.IsEmpty()) {
+        diagnosisMessageStress = "You seem to be doing well overall. If you have any concerns, consult with a healthcare professional.";
+    }
+    else {
+
+        int yPos = 100; // Adjust as needed
+
+        diagnosisTextstress = new wxStaticText(panel, wxID_ANY, "Stress Diagnosis: " + diagnosisMessageStress, wxPoint(20, yPos), wxDefaultSize);
+        yPos += 50; // Adjust spacing
+        adviceTextstress = new wxStaticText(panel, wxID_ANY, "Advice: " + adviceMessage, wxPoint(20, yPos), wxDefaultSize);
+
+       
+    }
 }
 
 
 
 void MainFrame::ShowAdviceAndDiagnosisAnxiety(wxCommandEvent& evt)
 {
+    display->Show();
+    display->Hide();
 
+    diagnosisButton->Show();
+    stressButton->Show();
+    anxietyButton->Hide();
+
+
+
+    if (diagnosisText != nullptr)
+    {
+        diagnosisText->Hide();
+        adviceText->Hide();
+    }
+    if (diagnosisTextstress != nullptr)
+    {
+        diagnosisTextstress->Hide();
+        adviceTextstress->Hide();
+    }
+
+
+    // Perform analysis and generate advice and diagnosis
+    wxString adviceMessage = "";
+    wxString diagnosisMessage = "";
+    // Provide advice based on the scores
+
+    if (anxietylvl == 0)
+    {
+        diagnosisMessage += "No Anxiety";
+        adviceMessage += "";
+    }
+    else if (anxietylvl < 4)
+    {
+        diagnosisMessage += "Minimal Anxiety";
+        adviceMessage += "Mindful Breathing: Practice deep, mindful breathing exercises to calm the nervous system.\n\n\
+            Regular Exercise : Engage in regular physical activity to release tension and boost endorphins.\n\n\
+            Healthy Sleep : Prioritize quality sleep to support overall well - being.\n\n\
+            Positive Affirmations : Incorporate positive affirmations into your daily routine.\n\n\
+            Mindfulness Apps : Explore mindfulness apps like Headspace or Calm for guided meditation.\n";
+    }
+    else if (anxietylvl < 9)
+    {
+        diagnosisMessage += "Mild Anxiety";
+        adviceMessage += "Journaling: Write down your thoughts and feelings to gain perspective.\n\n\
+            Social Support : Share your concerns with friends or family members for emotional support.\n\n\
+            Time Management : Organize tasks to reduce feelings of overwhelm.\n\n\
+            Gratitude Practice : Cultivate a gratitude practice to focus on positive aspects.\n\n\
+            Professional Help : Consider talking to a mental health professional for guidance.\n";
+
+    }
+    else if (anxietylvl < 14)
+    {
+        diagnosisMessage += "Moderate Anxiety";
+        adviceMessage += "Counseling or Therapy: Seek professional counseling or therapy for personalized support.\n\n\
+            Stress Reduction Techniques : Learn and practice stress reduction techniques, such as progressive muscle relaxation or biofeedback.\n\n\
+            Mind - Body Practices : Explore mind - body practices like yoga or tai chi.\n\n\
+            Limit Stimulants : Reduce intake of stimulants like caffeine, as they can exacerbate anxiety.\n\n\
+            Mindfulness - Based Stress Reduction(MBSR) : Consider enrolling in MBSR programs for structured mindfulness training.\n";
+    }
+    else if (anxietylvl < 19)
+    {
+        diagnosisMessage += "Moderately Severe Anxiety";
+        adviceMessage += "Medication Consultation: Consult with a psychiatrist about medication options.\n\n\
+            Crisis Hotline : Keep crisis hotline numbers handy for immediate support.\n\n\
+            Therapeutic Interventions : Engage in therapeutic interventions like cognitive - behavioral therapy(CBT) or dialectical behavior therapy(DBT).\n\n\
+            Self - Care Retreat : Plan a self - care retreat or day to focus on relaxation.\n\n\
+            Support Groups : Join support groups for individuals experiencing similar anxiety challenges.\n";
+
+    }
+    else if (anxietylvl <= 27)
+    {
+        diagnosisMessage += "Severe Anxiety";
+        adviceMessage += "Emergency Services: In extreme situations, seek help from emergency services.\n\n\
+            Inpatient Treatment : Consider inpatient treatment for intensive supportand stabilization.\n\n\
+            Comprehensive Treatment Plan : Collaborate with mental health professionals to develop a comprehensive anxiety management plan.\n\n\
+            Holistic Approaches : Explore holistic approaches like acupuncture or massage therapy.\n\n\
+            Mindfulness - Based Interventions : Participate in intensive mindfulness - based interventions for severe anxiety.\n";
+    }
+
+
+    // Provide overall diagnosis
+    if (adviceMessage.IsEmpty()) {
+        diagnosisMessage = "You seem to be doing well overall. If you have any concerns, consult with a healthcare professional.";
+    }
+    else {
+
+        int yPos = 100; // Adjust as needed
+        
+        diagnosisTextanxiety = new wxStaticText(panel, wxID_ANY, "Anxiety Diagnosis: " + diagnosisMessage, wxPoint(20, yPos), wxDefaultSize);
+        diagnosisTextanxiety->SetFont(wxFontInfo(20));
+        yPos += 50; // Adjust spacing
+        adviceTextanxiety = new wxStaticText(panel, wxID_ANY, "Advice: " + adviceMessage, wxPoint(20, yPos), wxDefaultSize);
+        adviceTextanxiety->SetFont(wxFontInfo(12));
+
+    }
+}
+
+void MainFrame::OnExitButtonClick(wxCommandEvent& evt) {
+    Close(); // This will close the application
 }
