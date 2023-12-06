@@ -30,11 +30,24 @@ private:
 	wxButton* anxietySubmit;
 	wxButton* stressSubmit;
 	wxButton* diagnosisButton;
+	wxButton* stressButton;
+	wxButton* anxietyButton;
+	wxButton* exitButton;
+
+	wxStaticText* diagnosisTextstress;
+	wxStaticText* diagnosisTextanxiety;
+	wxStaticText* diagnosisText;
+	wxStaticText* adviceTextstress;
+	wxStaticText* adviceTextanxiety;
+	wxStaticText* adviceText;
 
 	//login and sign up page
 	wxStaticText* userLabel;
 	wxStaticText* passLabel;
 	wxStaticText* ageLabel;
+
+
+
 	wxTextCtrl* userInput;
 	wxTextCtrl* passInput;
 	wxTextCtrl* ageInput;
@@ -60,6 +73,7 @@ private:
 	void OnStressSubmit(wxCommandEvent& evt);
 	void ShowAdviceAndDiagnosisStress(wxCommandEvent& evt);
 	void ShowAdviceAndDiagnosisAnxiety(wxCommandEvent& evt);
+	void OnExitButtonClick(wxCommandEvent& evt);
 	void ShowAdviceAndDiagnosis(wxCommandEvent& evt);
 };
 

@@ -39,11 +39,6 @@ public:
     void createUser(const User& newUser);
     static std::vector<std::string> getUserData(const std::string& username);
 
-    int getUserDepression(const std::string& username);
-
-    int getUserAnxiety(const std::string& username);
-
-    int getUserStress(const std::string& username);
 
 
     
