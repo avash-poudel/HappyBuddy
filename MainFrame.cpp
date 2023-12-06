@@ -51,10 +51,10 @@ MainFrame::MainFrame(const wxString& title): wxFrame(nullptr, wxID_ANY, title) {
     stressSubmit = new wxButton(panel, stressSubmitID, "Submit", wxPoint(350, 630));
     home = new wxButton(panel, homeID, "Home", wxPoint(300,10));
 
-    diagnosisButton = new wxButton(panel, diagnosisID, "View Diagnosis", wxPoint(350, 630));
+    diagnosisButton = new wxButton(panel, diagnosisID, "View Diagnosis", wxPoint(300, 630));
     diagnosisButton->Hide();
 
-    anxietyButton = new wxButton(panel, anxietyID, "View Anxiety Diagnosis", wxPoint(200, 630));
+    anxietyButton = new wxButton(panel, anxietyID, "View Anxiety Diagnosis", wxPoint(155, 630));
     anxietyButton->Hide();
     stressButton = new wxButton(panel, stressID, "View Stress Diagnosis", wxPoint(400, 630));
     stressButton->Hide();
@@ -306,6 +306,7 @@ void MainFrame::OnSubmitClick(wxCommandEvent& evt) {
                 this->SetSize(wxSize(800, 1100));
                 this->Center();
                 display = new wxStaticText(panel, wxID_ANY, displayData, wxPoint(30,100), wxDefaultSize);
+
                 display->Show();
                 diagnosisButton->Show();
 
@@ -453,7 +454,7 @@ void MainFrame::OnStressSubmit(wxCommandEvent& evt) {
         for (int i = 0; i < stressAnswers.size(); i++) {
             saveToFile.push_back(std::string(stressAnswers[i]->GetValue().mb_str()));
         }
-        std::ofstream csv("UserData.csv");
+        std::ofstream csv("UserData.csv", std::ios::app);
         if (!csv.is_open())
         {
             wxLogMessage("Could not open CSV file");
@@ -492,7 +493,7 @@ void MainFrame::OnStressSubmit(wxCommandEvent& evt) {
         stressSubmit->Hide();
 
         
-     
+
 
         diagnosisButton->Show();
 
@@ -505,8 +506,8 @@ void MainFrame::OnStressSubmit(wxCommandEvent& evt) {
 
 void MainFrame::ShowAdviceAndDiagnosis(wxCommandEvent& evt) {
 
-        display->Show();
-        display->Hide();
+       if(display != nullptr)
+            display->Hide();
  
         diagnosisButton->Hide();
         stressButton->Show();
@@ -515,11 +516,13 @@ void MainFrame::ShowAdviceAndDiagnosis(wxCommandEvent& evt) {
         if (diagnosisTextanxiety != nullptr)
         {
             diagnosisTextanxiety->Hide();
+            adviceTextanxiety->Hide();
+            
         }
         if (diagnosisTextstress != nullptr)
         {
             diagnosisTextstress->Hide();
-
+            adviceTextstress->Hide();
         }
         
 
@@ -654,8 +657,8 @@ void MainFrame::ShowAdviceAndDiagnosis(wxCommandEvent& evt) {
         
 void MainFrame::ShowAdviceAndDiagnosisStress(wxCommandEvent& evt)
 {
-    display->Show();
-    display->Hide();
+    if (display != nullptr)
+        display->Hide();
 
     diagnosisButton->Show();
     stressButton->Hide();
@@ -754,8 +757,8 @@ void MainFrame::ShowAdviceAndDiagnosisStress(wxCommandEvent& evt)
 
 void MainFrame::ShowAdviceAndDiagnosisAnxiety(wxCommandEvent& evt)
 {
-    display->Show();
-    display->Hide();
+    if (display != nullptr)
+        display->Hide();
 
     diagnosisButton->Show();
     stressButton->Show();
@@ -843,10 +846,8 @@ void MainFrame::ShowAdviceAndDiagnosisAnxiety(wxCommandEvent& evt)
         int yPos = 100; // Adjust as needed
         
         diagnosisTextanxiety = new wxStaticText(panel, wxID_ANY, "Anxiety Diagnosis: " + diagnosisMessage, wxPoint(20, yPos), wxDefaultSize);
-        diagnosisTextanxiety->SetFont(wxFontInfo(20));
         yPos += 50; // Adjust spacing
         adviceTextanxiety = new wxStaticText(panel, wxID_ANY, "Advice: " + adviceMessage, wxPoint(20, yPos), wxDefaultSize);
-        adviceTextanxiety->SetFont(wxFontInfo(12));
 
     }
 }
